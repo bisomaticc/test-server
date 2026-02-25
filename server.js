@@ -11,7 +11,7 @@ const adminRoutes = require("./routes/admin.routes");
 const app = express();
 
 // CORS configuration - allow frontend origin (set CLIENT_ORIGIN in env to override)
-const CLIENT_ORIGIN = https://test-client-ten-xi.vercel.app;
+const CLIENT_ORIGIN = "https://test-client-ten-xi.vercel.app";
 const corsOptions = {
   origin: CLIENT_ORIGIN,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -49,4 +49,5 @@ app.listen(PORT, () =>
   console.log(`Server running on ${PORT}`)
 
 );
+
 
