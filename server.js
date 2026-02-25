@@ -45,9 +45,7 @@ app.use("/static", express.static(path.join(__dirname, "static")));
 app.use("/api", publicRoutes);
 app.use("/api/admin", adminRoutes);
 
-app.listen(PORT, () =>
-  console.log(`Server running on ${PORT}`)
+module.exports=app;
 
-);
 
 
