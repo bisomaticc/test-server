@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.post("/login", adminController.login);
 
-router.use(adminauth);
+router.use(adminAuth);
 
 router.post("/products", upload.single("image"), productController.create);
 router.put("/products/:id", productController.update);
