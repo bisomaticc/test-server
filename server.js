@@ -10,14 +10,8 @@ const adminRoutes = require("./routes/admin.routes");
 
 const app = express();
 
-app.use(
-  cors({
-    origin: "https://test-client-ten-xi.vercel.app/",
-    credentials: true,
-  })
-);
 // CORS configuration - allow frontend origin (set CLIENT_ORIGIN in env to override)
-const CLIENT_ORIGIN = process.env.CLIENT_ORIGIN || "https://sareesanskriti.com";
+const CLIENT_ORIGIN = https://test-client-ten-xi.vercel.app;
 const corsOptions = {
   origin: CLIENT_ORIGIN,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -55,3 +49,4 @@ app.listen(PORT, () =>
   console.log(`Server running on ${PORT}`)
 
 );
+
