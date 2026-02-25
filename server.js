@@ -18,7 +18,7 @@ const corsOptions = {
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
 };
-
+console.log("Mongo URI:", process.env.MONGO_URI);
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
 app.use(express.json());
@@ -33,6 +33,7 @@ if (!process.env.MONGO_URI) {
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
+    console.log("Mongo URI:", process.env.MONGO_URI);
     console.log("MongoDB Atlas Connected");
   })
   .catch((err) => {
