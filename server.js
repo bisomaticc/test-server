@@ -18,22 +18,25 @@ const corsOptions = {
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
 };
-console.log("Mongo URI:", process.env.MONGO_URI);
+console.log("Mongo URI:", process.env.MONGO_URI_MONGODB_URI);
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
 app.use(express.json());
 
 const PORT = process.env.PORT || 5000;
 
-if (!process.env.MONGO_URI) {
-  console.error("Missing MONGO_URI in environment. Please set it in .env");
+if (!process.env.MONGO_URI_MONGODB_URI) {
+  console.error("Missing MONGO_URI_MONGODB_URI in environment. Please set it in .env");
   process.exit(1);
 }
 
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect(process.env.MONGO_URI_MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => {
-    console.log("Mongo URI:", process.env.MONGO_URI);
+    console.log("Mongo URI:", process.env.MONGO_URI_MONGODB_URI);
     console.log("MongoDB Atlas Connected");
   })
   .catch((err) => {
