@@ -1,6 +1,6 @@
 const express = require("express");
 const adminAuth = require("../middleware/adminauth");
-const upload = require("../middleware/uploadMiddleware");
+const upload = require("../middleware/uploadmiddleware");
 
 const adminController = require("../controller/admin.controller");
 const productController = require("../controller/product.controller");
