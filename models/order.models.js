@@ -11,7 +11,8 @@ const orderSchema = new mongoose.Schema(
       productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
       name: String,
       price: Number,
-      qty: Number
+      qty: Number,
+      imageUrl: String
     }
   ],
 
@@ -20,5 +21,6 @@ const orderSchema = new mongoose.Schema(
 },
 { timestamps: true }
 );
+
 
 module.exports = mongoose.model("Order", orderSchema);
