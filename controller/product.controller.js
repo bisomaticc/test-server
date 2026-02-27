@@ -11,7 +11,7 @@ exports.getAll = async (req, res) => {
 
 exports.getById = async (req, res) => {
   try {
-    const product = await productService.getById(req.params.id);
+    const product = await productService.getById(req.params._id);
     if (!product) {
       return res.status(404).json({ message: "Product not found" });
     }
@@ -77,3 +77,4 @@ exports.delete = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
