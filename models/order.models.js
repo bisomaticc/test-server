@@ -12,7 +12,7 @@ const orderSchema = new mongoose.Schema(
       name: String,
       price: Number,
       qty: Number,
-      imageUrl: String
+      imageUrls: String
     }
   ],
 
@@ -24,3 +24,4 @@ const orderSchema = new mongoose.Schema(
 
 
 module.exports = mongoose.model("Order", orderSchema);
+
