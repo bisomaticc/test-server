@@ -5,8 +5,8 @@ exports.create = async (data) => {
   const inquiry = await Inquiry.create(data);
 
   await transporter.sendMail({
-    from: `"Saree Sanskriti" <no-reply@saree.com>`,
-    to: "admin@saree.com",
+    from: `"Saree Sanskriti" <contact@sareesanskriti.com>`,
+    to: "contact@sareesanskriti.com",
     subject: `New Inquiry: ${data.productName}`,
     html: `
       <h3>New Inquiry</h3>
@@ -19,4 +19,5 @@ exports.create = async (data) => {
   });
 
   return inquiry;
+
 };
