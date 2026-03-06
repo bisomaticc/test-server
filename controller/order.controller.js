@@ -32,7 +32,7 @@ exports.checkout = async (req, res) => {
     message += `%0ATotal: ₹${totalAmount}`;
 
     const whatsappURL =
-      `https://wa.me/919599819939?text=${message}`;
+      `https://wa.me/919079707132?text=${message}`;
 
     res.json({
       success: true,
@@ -51,4 +51,5 @@ exports.getAll = async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
+
 };
