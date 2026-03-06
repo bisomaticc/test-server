@@ -10,7 +10,7 @@ const adminRoutes = require("./routes/admin.routes");
 const app = express();
 
 // ✅ CORS
-const CLIENT_ORIGIN = "https://test-client-ten-xi.vercel.app";
+const CLIENT_ORIGIN = "https://www.sareesanskriti.com";
 app.use(
   cors({
     origin: CLIENT_ORIGIN,
@@ -37,3 +37,4 @@ app.use("/api", publicRoutes);
 app.use("/api/admin", adminRoutes);
 
 module.exports = app;
+
