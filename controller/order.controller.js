@@ -1,5 +1,6 @@
 const Order = require("../models/order.models");
 const orderService = require("../services/order.service");
+const transporter = require("../config/mail");
 
 exports.checkout = async (req, res) => {
   try {
@@ -17,6 +18,28 @@ exports.checkout = async (req, res) => {
       city,
       items,
       totalAmount
+    });
+
+    await transporter.sendMail({
+      from: `"Saree Sanskriti" <noreply@sareesanskriti.com>`,
+      to: "contact@sareesanskriti.com",
+      subject: `New Order from ${customerName}`,
+      html: `
+        <h3>New Order</h3>
+        <p><b>Name:</b> ${customerName}</p>
+        <p><b>Phone:</b> ${phone}</p>
+        <p><b>City:</b> ${city}</p>
+        <h4>Items</h4>
+        <ul>
+          ${items
+            .map(
+              (item) =>
+                `<li>${item.name} x ${item.qty} - ₹${item.price * item.qty}</li>`
+            )
+            .join("")}
+        </ul>
+        <p><b>Total:</b> ₹${totalAmount}</p>
+      `
     });
 
     // Create WhatsApp message
