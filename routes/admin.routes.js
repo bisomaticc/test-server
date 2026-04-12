@@ -4,6 +4,7 @@ const adminAuth = require("../middleware/adminauth");
 const adminController = require("../controller/admin.controller");
 const productController = require("../controller/product.controller");
 const orderController = require("../controller/order.controller");
+const catalogController = require("../controller/catalog.controller");
 
 const router = express.Router();
 
@@ -29,5 +30,14 @@ router.delete("/products/:id", productController.delete);
    ORDERS
 ===================== */
 router.get("/orders", orderController.getAll);
+
+/* =====================
+   CATALOG (fabrics & categories in MongoDB)
+===================== */
+router.get("/catalog", catalogController.getCatalog);
+router.post("/catalog/fabric", catalogController.addFabric);
+router.delete("/catalog/fabric", catalogController.deleteFabric);
+router.post("/catalog/category", catalogController.addCategory);
+router.delete("/catalog/category", catalogController.deleteCategory);
 
 module.exports = router;
