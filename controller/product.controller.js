@@ -26,6 +26,7 @@ exports.create = async (req, res) => {
     const {
       name,
       price,
+      mrp,
       description,
       fabric,
       category,
@@ -40,6 +41,7 @@ exports.create = async (req, res) => {
     const product = await productService.create({
       name,
       price,
+      mrp: mrp == null || mrp === "" ? null : Number(mrp),
       description,
       fabric,
       category,
