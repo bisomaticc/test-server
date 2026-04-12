@@ -4,6 +4,8 @@ const productSchema = new mongoose.Schema(
 {
   name: { type: String, required: true },
   price: { type: Number, required: true },
+  /** Max retail price (optional; shown struck-through when higher than selling price). */
+  mrp: { type: Number, default: null },
   description: String,
   category: String,
   imageUrls: {type:[String],},
