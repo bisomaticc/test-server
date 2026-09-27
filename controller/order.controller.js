@@ -15,19 +15,41 @@ function escapeAttr(s) {
   return escapeHtml(s);
 }
 
+function convertDriveUrl(url) {
+  if (!url) return url;
+  try {
+    const parsedUrl = new URL(url);
+    const match = parsedUrl.pathname.match(/\/file\/d\/([^/]+)/);
+    if (match && match[1]) {
+      return `https://lh3.googleusercontent.com/d/${match[1]}`;
+    }
+    const idParam = parsedUrl.searchParams.get("id");
+    if (idParam) {
+      return `https://lh3.googleusercontent.com/d/${idParam}`;
+    }
+    return url;
+  } catch {
+    return url;
+  }
+}
+
 /** First safe https URL for item thumbnail (string, array, or comma-separated). */
 function getItemImageUrls(item) {
   const raw = item.imageUrls;
   if (raw == null) return [];
+  let list = [];
   if (Array.isArray(raw)) {
-    return raw.map(String).map((u) => u.trim()).filter(Boolean);
+    list = raw.map(String).map((u) => u.trim()).filter(Boolean);
+  } else {
+    const str = String(raw).trim();
+    if (!str) return [];
+    if (str.includes(",")) {
+      list = str.split(",").map((u) => u.trim()).filter(Boolean);
+    } else {
+      list = [str];
+    }
   }
-  const str = String(raw).trim();
-  if (!str) return [];
-  if (str.includes(",")) {
-    return str.split(",").map((u) => u.trim()).filter(Boolean);
-  }
-  return [str];
+  return list.map(convertDriveUrl);
 }
 
 function isHttpUrl(url) {
@@ -46,22 +68,32 @@ exports.checkout = async (req, res) => {
       0
     );
 
+    // Normalize item image URLs before storing
+    const normalizedItems = items.map((item) => {
+      const urls = getItemImageUrls(item);
+      return {
+        ...item,
+        imageUrls: urls.length > 0 ? urls[0] : (item.imageUrls || "")
+      };
+    });
+
     await Order.create({
       customerName,
       email,
       phone,
       city,
       address,
-      items,
+      items: normalizedItems,
       totalAmount
     });
 
     const itemsHtml = items
       .map((item) => {
-        const line = `${escapeHtml(item.name)} x ${item.qty} - ₹${item.price * item.qty}`;
+        const colorLabel = item.color ? ` (Color: <b>${escapeHtml(item.color)}</b>)` : "";
+        const line = `${escapeHtml(item.name)}${colorLabel} x ${item.qty} - ₹${item.price * item.qty}`;
         const urls = getItemImageUrls(item).filter(isHttpUrl);
         const imgs = urls
-          .slice(0, 5)
+          .slice(0, 3)
           .map(
             (u) =>
               `<img src="${escapeAttr(u)}" alt="" width="200" style="max-width:200px;height:auto;display:block;border-radius:6px;margin:8px 0 0 0;border:1px solid #eee;" />`
@@ -90,24 +122,25 @@ exports.checkout = async (req, res) => {
     });
 
     // WhatsApp: plain text + image URL(s) per line (tap to open; WA does not embed images in prefilled text)
-    let waLines = ["New Order", ""];
-    waLines.push(`Name: ${customerName}`);
-    if (email) waLines.push(`Email: ${email}`);
-    waLines.push(`Phone: ${phone}`);
-    if (city) waLines.push(`City: ${city}`);
-    if (address) waLines.push(`Address: ${address}`);
-    waLines.push("", "Items:");
+    let waLines = ["*New Saree Order*", ""];
+    waLines.push(`*Name:* ${customerName}`);
+    if (email) waLines.push(`*Email:* ${email}`);
+    waLines.push(`*Phone:* ${phone}`);
+    if (city) waLines.push(`*City:* ${city}`);
+    if (address) waLines.push(`*Address:* ${address}`);
+    waLines.push("", "*Items:*");
     items.forEach((item) => {
+      const colorText = item.color ? ` (Color: ${item.color})` : "";
       waLines.push(
-        `• ${item.name} x ${item.qty} - ₹${item.price * item.qty}`
+        `• ${item.name}${colorText} x ${item.qty} - ₹${item.price * item.qty}`
       );
       const urls = getItemImageUrls(item).filter(isHttpUrl);
-      urls.slice(0, 5).forEach((u) => {
-        waLines.push(`  Image: ${u}`);
+      urls.slice(0, 2).forEach((u) => {
+        waLines.push(`  Photo: ${u}`);
       });
     });
     waLines.push("");
-    waLines.push(`Total: ₹${totalAmount}`);
+    waLines.push(`*Total:* ₹${totalAmount}`);
 
     const whatsappURL = `https://wa.me/919079707132?text=${encodeURIComponent(
       waLines.join("\n")

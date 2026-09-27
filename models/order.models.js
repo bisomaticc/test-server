@@ -14,7 +14,8 @@ const orderSchema = new mongoose.Schema(
       name: String,
       price: Number,
       qty: Number,
-      imageUrls: String
+      imageUrls: mongoose.Schema.Types.Mixed,
+      color: String,
     }
   ],
 

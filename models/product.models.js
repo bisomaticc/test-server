@@ -8,13 +8,15 @@ const productSchema = new mongoose.Schema(
   mrp: { type: Number, default: null },
   description: String,
   category: String,
-  imageUrls: {type:[String],},
+  categories: { type: [String], default: [] },
+  imageUrls: { type: [String] },
   fabric: String,
-  stock: { type: Number, default: 0 }
+  colors: { type: [String], default: [] },
+  stock: { type: Number, default: 0 },
+  isOutOfStock: { type: Boolean, default: false }
 },
 { timestamps: true }
 );
-
 
 module.exports = mongoose.model("Product", productSchema);
 

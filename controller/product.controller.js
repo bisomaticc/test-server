@@ -30,7 +30,11 @@ exports.create = async (req, res) => {
       description,
       fabric,
       category,
+      categories,
       imageUrls,
+      colors,
+      isOutOfStock,
+      stock,
     } = req.body;
 
     // ✅ validate imageUrls
@@ -38,14 +42,29 @@ exports.create = async (req, res) => {
       return res.status(400).json({ message: "imageUrls must be a non-empty array" });
     }
 
+    const categoriesArray = Array.isArray(categories) && categories.length > 0
+      ? categories
+      : category ? [category] : [];
+    const primaryCategory = categoriesArray[0] || category || "";
+
+    const colorsArray = Array.isArray(colors)
+      ? colors.map((c) => String(c).trim()).filter(Boolean)
+      : typeof colors === "string" && colors.trim()
+      ? colors.split(",").map((c) => c.trim()).filter(Boolean)
+      : [];
+
     const product = await productService.create({
       name,
       price,
       mrp: mrp == null || mrp === "" ? null : Number(mrp),
       description,
       fabric,
-      category,
-      imageUrls, // ✅ correct field
+      category: primaryCategory,
+      categories: categoriesArray,
+      imageUrls,
+      colors: colorsArray,
+      isOutOfStock: Boolean(isOutOfStock),
+      stock: stock != null ? Number(stock) : 0,
     });
 
     res.status(201).json(product);
@@ -56,7 +75,23 @@ exports.create = async (req, res) => {
 
 exports.update = async (req, res) => {
   try {
-    const product = await productService.update(req.params.id, req.body);
+    const updateData = { ...req.body };
+    if (updateData.categories && Array.isArray(updateData.categories)) {
+      if (!updateData.category && updateData.categories.length > 0) {
+        updateData.category = updateData.categories[0];
+      }
+    } else if (updateData.category && !updateData.categories) {
+      updateData.categories = [updateData.category];
+    }
+
+    if (updateData.colors && typeof updateData.colors === "string") {
+      updateData.colors = updateData.colors
+        .split(",")
+        .map((c) => c.trim())
+        .filter(Boolean);
+    }
+
+    const product = await productService.update(req.params.id, updateData);
 
     if (!product) {
       return res.status(404).json({ message: "Product not found" });

@@ -3,28 +3,51 @@ const ShopCatalog = require("../models/shopCatalog.models");
 const DEFAULT_KEY = "default";
 
 const DEFAULT_FABRICS = [
-  "Silk",
   "Cotton",
+  "Silk",
+  "Cotton-Silk",
+  "Cotton Silk",
+  "Banarasi",
+  "Banarasi Silk",
+  "Kanjivaram",
+  "Kanjivaram Silk",
   "Chiffon",
   "Georgette",
-  "Banarasi",
-  "Kanjivaram",
+  "Organza",
+  "Chanderi",
+  "Linen",
+  "Bandhani",
+  "Dola Silk",
+  "Tussar Silk",
   "Mal Cotton",
   "Kota Doriya",
   "Maheshwari Silk",
-  "Linen",
+  "Satin",
+  "Crepe",
+  "Art Silk",
 ];
 
 const DEFAULT_CATEGORIES = [
+  "Cotton",
+  "Silk",
+  "Cotton-Silk",
+  "Cotton Silk",
+  "Banarasi",
+  "Kanjivaram",
+  "Chanderi",
+  "Organza",
+  "Bandhani",
   "Weddings",
   "Parties",
-  "Casual",
   "Festive",
   "Bridal",
+  "Casual",
   "Office Wear",
   "Summer Wear",
   "Day Party Wear",
   "Night Party Wear",
+  "Traditional",
+  "Designer",
 ];
 
 function normalizeName(name) {
@@ -39,8 +62,10 @@ async function getDoc() {
     {
       $setOnInsert: {
         key: DEFAULT_KEY,
-        fabrics: [...DEFAULT_FABRICS],
-        categories: [...DEFAULT_CATEGORIES],
+      },
+      $addToSet: {
+        fabrics: { $each: DEFAULT_FABRICS },
+        categories: { $each: DEFAULT_CATEGORIES },
       },
     },
     { upsert: true, new: true }
