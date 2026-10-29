@@ -100,6 +100,24 @@ exports.removeFabric = async (rawName) => {
   return exports.getCatalog();
 };
 
+exports.updateFabric = async (rawOldName, rawNewName) => {
+  const oldName = normalizeName(rawOldName);
+  const newName = normalizeName(rawNewName);
+  if (!oldName) throw new Error("Current fabric name is required");
+  if (!newName) throw new Error("New fabric name is required");
+  const doc = await getDoc();
+  const currentList = Array.isArray(doc.fabrics) ? doc.fabrics : [];
+  const idx = currentList.indexOf(oldName);
+  if (idx !== -1) {
+    currentList[idx] = newName;
+  } else if (!currentList.includes(newName)) {
+    currentList.push(newName);
+  }
+  doc.fabrics = [...new Set(currentList)].sort((a, b) => a.localeCompare(b));
+  await doc.save();
+  return exports.getCatalog();
+};
+
 exports.addCategory = async (rawName) => {
   const name = normalizeName(rawName);
   if (!name) throw new Error("Invalid category name");
@@ -116,5 +134,23 @@ exports.removeCategory = async (rawName) => {
   if (!name) throw new Error("Invalid category name");
   await getDoc();
   await ShopCatalog.updateOne({ key: DEFAULT_KEY }, { $pull: { categories: name } });
+  return exports.getCatalog();
+};
+
+exports.updateCategory = async (rawOldName, rawNewName) => {
+  const oldName = normalizeName(rawOldName);
+  const newName = normalizeName(rawNewName);
+  if (!oldName) throw new Error("Current category name is required");
+  if (!newName) throw new Error("New category name is required");
+  const doc = await getDoc();
+  const currentList = Array.isArray(doc.categories) ? doc.categories : [];
+  const idx = currentList.indexOf(oldName);
+  if (idx !== -1) {
+    currentList[idx] = newName;
+  } else if (!currentList.includes(newName)) {
+    currentList.push(newName);
+  }
+  doc.categories = [...new Set(currentList)].sort((a, b) => a.localeCompare(b));
+  await doc.save();
   return exports.getCatalog();
 };

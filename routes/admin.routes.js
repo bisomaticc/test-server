@@ -36,8 +36,10 @@ router.get("/orders", orderController.getAll);
 ===================== */
 router.get("/catalog", catalogController.getCatalog);
 router.post("/catalog/fabric", catalogController.addFabric);
+router.put("/catalog/fabric", catalogController.updateFabric);
 router.delete("/catalog/fabric", catalogController.deleteFabric);
 router.post("/catalog/category", catalogController.addCategory);
+router.put("/catalog/category", catalogController.updateCategory);
 router.delete("/catalog/category", catalogController.deleteCategory);
 
 module.exports = router;
