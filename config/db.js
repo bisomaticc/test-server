@@ -12,7 +12,13 @@ async function connectDB() {
   }
 
   if (!cached.promise) {
-    cached.promise = mongoose.connect(process.env.MONGO_URI_MONGODB_MONGODB_URI, {
+    const mongoUri =
+      process.env.MONGO_URI_MONGODB_MONGODB_URI ||
+      process.env.MONGO_URI_MONGODB_URI ||
+      process.env.MONGODB_URI ||
+      process.env.MONGO_URI;
+
+    cached.promise = mongoose.connect(mongoUri, {
       bufferCommands: false,
       serverSelectionTimeoutMS: 30000,
     });
@@ -23,4 +29,3 @@ async function connectDB() {
 }
 
 module.exports = connectDB;
-
